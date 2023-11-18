@@ -123,6 +123,7 @@
             style="color: rgb(13, 12, 12); font-weight: 700"
             type="submit"
             id="login_btn"
+            onclick="login()"
             >Login</a
           >
         </div>
@@ -213,7 +214,7 @@
       storageBucket: "login-signup-authenticat-4fa75.appspot.com",
       messagingSenderId: "77434343036",
       appId: "1:77434343036:web:de2288d9664bae1c7483f9"
-    };
+        };
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -252,7 +253,7 @@
                 text: "Invalid email or password",
                 icon: "error",
               });
-            } else if (err.code === "auth/invalid-email") {
+            } else if (err.code === "Email is incorrect") {
               swal({
                 title: "Error",
                 text: "Invalid email address",
@@ -271,32 +272,46 @@
     };
 
     document.getElementById("googlelog").addEventListener("click", () => {
-      signInWithPopup(auth, googleProvider)
-        .then((result) => {
-          if(!result){
-          swal('Invalid Email','User with this email does not exist.', 'error');
-          } else {
-            window.location.replace("landing.html");
-          }
+  signInWithPopup(auth, googleProvider)
+    .then((result) => {
+      // Google Sign-In was successful
+      const user = result.user;
+      console.log('Google Sign-In successful:', user);
 
-        })
-        .catch((error) => {
-          if (error.code === "auth/internal-error") {
-            swal(
-              "Error Occured",
-              "please check your internet connection",
-              "error"
-            );
-          } else if (error.code === "auth/popup-blocked") {
-            // Popup was blocked, inform the user
-            swal("Popup blocked", "Please enable popups for this site.", 'error');
-          } else {
-            // Handle other errors
-            swal('Error', `${error.code}`, 'error')
-          }
-        });
+      // Redirect to landing page or perform other actions
+      window.location.replace("landing.html");
+    })
+    .catch((error) => {
+      // Handle errors
+      const errorCode = error.code;
+      const errorMessage = error.message;
+
+      console.error('Google Sign-In error:', errorCode, errorMessage);
+
+      // Display an error message using SweetAlert
+      swal('Error Occurred', 'Unable to sign in with Google. Please try again.', 'error');
     });
+});
+document.getElementById("googlelog").addEventListener("click", () => {
+  signInWithPopup(auth, googleProvider)
+    .then((result) => {
+      // Google Sign-In was successful
+      const user = result.user;
+      console.log('Google Sign-In successful:', user);
 
+      // Redirect to landing page or perform other actions
+      window.location.replace("landing.html");
+    })
+    .catch((error) => {
+      // Handle errors
+      const errorCode = error.code;
+      const errorMessage = error.message;
 
+      console.error('Google Sign-In error:', errorCode, errorMessage);
+
+      // Display an error message using SweetAlert
+      swal('Error Occurred', 'Unable to sign in with Google. Please try again.', 'error');
+    });
+});
   </script>
 </html>

@@ -44,7 +44,7 @@
         <a href="profile.html">
           <img style="border-radius: 100%;" class="img-fluid profile-pic" src="assets/images/icons/profile.png" alt="profile" />
         </a>
-        <h4>Hello, Josiah!</h4>
+        <h4 id="welcomeMessage">Hello,</h4>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
@@ -963,6 +963,41 @@
      data-full-width-responsive="true"></ins>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js"; 
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyBfaKgDgfXKqn8QUWYZfBTOJ87bnc0o0TQ",
+    authDomain: "fuzzy-2414a.firebaseapp.com",
+    projectId: "fuzzy-2414a",
+    storageBucket: "fuzzy-2414a.appspot.com",
+    messagingSenderId: "93043591842",
+    appId: "1:93043591842:web:655dc3a677a1880e35a5fb",
+    measurementId: "G-39MSVLK2KJ"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Wait for the DOM to be ready
+  document.addEventListener('DOMContentLoaded', () => {
+    // Check if the user is logged in
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is logged in, display the username on the homepage
+        document.getElementById('welcomeMessage').innerText = `Welcome, ${user.displayName}!`;
+      }
+    });
+  });
 </script>
   </body>
 </html>
