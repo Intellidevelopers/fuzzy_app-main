@@ -45,6 +45,9 @@
           <img style="border-radius: 100%;" class="img-fluid profile-pic" src="assets/images/icons/profile.png" alt="profile" />
         </a>
         <h4 id="userGreeting"></h4>
+        <!-- Example HTML element for displaying user's full name -->
+<p id="userGreeting"></p>
+
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
@@ -967,36 +970,63 @@
 
 <script type="module">
   // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
 
-  // Your web app's Firebase configuration
-  // Make sure it matches the configuration in your signup page
-  const firebaseConfig = {
-    apiKey: "AIzaSyC1kDtYIauw1KYF2OYK6zJBj_DtDxjuOWo",
-        authDomain: "login-signup-authenticat-4fa75.firebaseapp.com",
-        databaseURL: "https://login-signup-authenticat-4fa75-default-rtdb.firebaseio.com",
-        projectId: "login-signup-authenticat-4fa75",
-        storageBucket: "login-signup-authenticat-4fa75.appspot.com",
-        messagingSenderId: "77434343036",
-        appId: "1:77434343036:web:de2288d9664bae1c7483f9"
-  };
+// Your web app's Firebase configuration
+// Make sure it matches the configuration in your signup page
+const firebaseConfig = {
+  apiKey: "AIzaSyC1kDtYIauw1KYF2OYK6zJBj_DtDxjuOWo",
+  authDomain: "login-signup-authenticat-4fa75.firebaseapp.com",
+  databaseURL: "https://login-signup-authenticat-4fa75-default-rtdb.firebaseio.com",
+  projectId: "login-signup-authenticat-4fa75",
+  storageBucket: "login-signup-authenticat-4fa75.appspot.com",
+  messagingSenderId: "77434343036",
+  appId: "1:77434343036:web:de2288d9664bae1c7483f9"
+};
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-  document.addEventListener('DOMContentLoaded', () => {
-    // Check if the user is logged in
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is logged in, display the full name on the homepage
-        const fullName = user.displayName;
-        document.getElementById('welcomeMessage').innerText = `${fullName}!`;
-      }
-    });
+document.addEventListener('DOMContentLoaded', () => {
+  // Check if the user is logged in
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is logged in, display the full name on the homepage
+      const fullName = user.displayName;
+      document.getElementById('userGreeting').innerText = `Welcome back, ${fullName}!`;
+
+      // Generate and store a unique ID for the user
+      generateAndStoreUniqueID(user.email);
+    }
   });
+});
+
+// Function to generate a unique ID and store it in Firestore
+function generateAndStoreUniqueID(userEmail) {
+  // Generate a unique ID (you can customize this logic)
+  const uniqueID = generateUniqueID(userEmail);
+
+  // Store the unique ID in Firestore
+  const userDocRef = doc(db, 'users', userEmail);
+  setDoc(userDocRef, { uniqueID: uniqueID })
+    .then(() => {
+      console.log('Unique ID stored successfully');
+    })
+    .catch((error) => {
+      console.error('Error storing unique ID:', error);
+    });
+}
+
+// Function to generate a unique ID (you can customize this logic)
+function generateUniqueID(userEmail) {
+  // Example: Use the email and a timestamp for simplicity
+  return `${userEmail}_${Date.now()}`;
+}
+
 </script>
-<script src="display.js"></script>
   </body>
 </html>
