@@ -41,7 +41,8 @@
         </div>
         <div class="d-flex align-items-center gap-2">
           <div class="profile-pic mt-5">
-            <img class="img-fluid img" src="assets/images/icons/profile.png" alt="profile" />
+            <img id="profileImagePreview" src="#" alt="Profile Image Preview" style="display: none;" class="img-fluid img" />
+            
           </div>
           <div class="profile-name d-flex align-items-center justify-content-between mt-3 w-100">
             <h4 class="theme-color">Adeagbo Josiah</h4>
@@ -220,5 +221,69 @@
 
     <!-- script js -->
     <script src="assets/js/script.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyC1kDtYIauw1KYF2OYK6zJBj_DtDxjuOWo",
+        authDomain: "login-signup-authenticat-4fa75.firebaseapp.com",
+        databaseURL: "https://login-signup-authenticat-4fa75-default-rtdb.firebaseio.com",
+        projectId: "login-signup-authenticat-4fa75",
+        storageBucket: "login-signup-authenticat-4fa75.appspot.com",
+        messagingSenderId: "77434343036",
+        appId: "1:77434343036:web:de2288d9664bae1c7483f9"
+      };
+  
+      firebase.initializeApp(firebaseConfig);
+  
+      const storage = firebase.storage();
+      const firestore = firebase.firestore();
+  </script>
+  
+  <!-- JavaScript for uploading profile image -->
+  <script>
+      function uploadProfileImage() {
+          const profileImageInput = document.getElementById('profileImageInput');
+          const profileImagePreview = document.getElementById('profileImagePreview');
+  
+          const file = profileImageInput.files[0];
+          if (file) {
+              // Create a reference to the storage location
+              const storageRef = storage.ref('profileImages/' + file.name);
+  
+              // Upload the file
+              const uploadTask = storageRef.put(file);
+  
+              // Listen for state changes, errors, and completion of the upload.
+              uploadTask.on('state_changed',
+                  (snapshot) => {
+                      // Observe state changes, such as progress, pause, and resume
+                      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                      console.log('Upload is ' + progress + '% done');
+                  },
+                  (error) => {
+                      // Handle unsuccessful uploads
+                      console.error('Error uploading file: ', error);
+                  },
+                  () => {
+                      // Handle successful uploads on complete
+                      console.log('File uploaded successfully');
+  
+                      // Get the download URL for the uploaded file
+                      uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                          // Save the download URL to Firestore or use it as needed
+                          console.log('File available at', downloadURL);
+  
+                          // Display the uploaded image
+                          profileImagePreview.src = downloadURL;
+                          profileImagePreview.style.display = 'block';
+                      });
+                  }
+              );
+          }
+      }
+  </script>
   </body>
+  <script src="https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.6.0/firebase-storage.js"></script>
 </html>
